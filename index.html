@@ -60,6 +60,12 @@
       margin-bottom: 12px;
     }
     .header__step { font-size: 17px; font-weight: 600; letter-spacing: -0.01em; }
+    .header.anim .header__step { animation: headText 0.45s var(--ease-out); }
+    .header.anim .header__count { animation: headText 0.45s var(--ease-out) 0.05s both; }
+    @keyframes headText {
+      from { opacity: 0; transform: translateY(-6px); }
+      to { opacity: 1; transform: none; }
+    }
     .header__count {
       font-size: 13px;
       font-weight: 500;
@@ -67,15 +73,19 @@
       font-variant-numeric: tabular-nums;
       letter-spacing: 0.06em;
     }
-    .meter { display: flex; gap: 6px; }
-    .meter__seg {
-      flex: 1;
-      height: 4px;
-      border-radius: 3px;
+    .track {
+      height: 5px;
       background: var(--line-strong);
-      transition: background 0.4s var(--ease-out);
+      border-radius: 3px;
+      overflow: hidden;
     }
-    .meter__seg.done { background: var(--ink); }
+    .track__fill {
+      height: 100%;
+      width: 0%;
+      background: var(--ink);
+      border-radius: 3px;
+      transition: width 0.45s var(--ease-out);
+    }
 
     /* ---------- Scrollable content ---------- */
     .content {
@@ -84,7 +94,29 @@
     }
 
     .step { display: none; }
-    .step.is-active { display: block; animation: rise 0.35s var(--ease-out); }
+    .step.is-active { display: block; }
+
+    /* Staggered entrance for each element in a step */
+    .step.is-active .stack > *,
+    .step.is-active .intro > * {
+      opacity: 0;
+      animation: enter 0.55s var(--ease-out) forwards;
+    }
+    @keyframes enter {
+      from { opacity: 0; transform: translateY(16px); filter: blur(6px); }
+      to { opacity: 1; transform: none; filter: blur(0); }
+    }
+    .step.is-active .stack > *:nth-child(1), .step.is-active .intro > *:nth-child(1) { animation-delay: 0.02s; }
+    .step.is-active .stack > *:nth-child(2), .step.is-active .intro > *:nth-child(2) { animation-delay: 0.07s; }
+    .step.is-active .stack > *:nth-child(3), .step.is-active .intro > *:nth-child(3) { animation-delay: 0.12s; }
+    .step.is-active .stack > *:nth-child(4), .step.is-active .intro > *:nth-child(4) { animation-delay: 0.17s; }
+    .step.is-active .stack > *:nth-child(5), .step.is-active .intro > *:nth-child(5) { animation-delay: 0.22s; }
+    .step.is-active .stack > *:nth-child(6) { animation-delay: 0.27s; }
+    .step.is-active .stack > *:nth-child(7) { animation-delay: 0.32s; }
+    .step.is-active .stack > *:nth-child(8) { animation-delay: 0.37s; }
+    .step.is-active .stack > *:nth-child(9) { animation-delay: 0.42s; }
+    .step.is-active .stack > *:nth-child(n+10) { animation-delay: 0.47s; }
+
     @keyframes rise {
       from { opacity: 0; transform: translateY(10px); }
       to { opacity: 1; transform: none; }
@@ -96,6 +128,8 @@
       display: flex;
       flex-direction: column;
       justify-content: center;
+      align-items: center;
+      text-align: center;
       padding: 20px 4px;
     }
     .intro__eyebrow {
@@ -114,16 +148,16 @@
     .intro__lead {
       font-size: 16px;
       color: var(--ink-soft);
-      max-width: 34ch;
-      margin: 0 0 20px;
+      max-width: 42ch;
+      margin: 0 auto 20px;
     }
     .intro__note {
       font-size: 13px;
       color: var(--ink-faint);
-      max-width: 36ch;
-      margin: 0 0 32px;
+      max-width: 38ch;
+      margin: 0 auto 32px;
     }
-    .intro__cta { align-self: flex-start; }
+    .intro__cta { align-self: center; }
     @media (max-width: 460px) { .intro__cta { align-self: stretch; text-align: center; } }
 
     .consent {
@@ -169,6 +203,22 @@
     .field textarea { resize: none; line-height: 1.55; }
     .field.invalid input,
     .field.invalid textarea { border-color: var(--error); box-shadow: none; }
+
+    /* Affix (unit inside input, e.g. %) */
+    .affix { position: relative; }
+    .affix input { text-align: right; padding-inline-end: 30px; }
+    .affix__unit {
+      position: absolute;
+      inset-inline-end: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 16px;
+      color: var(--ink-soft);
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.15s var(--ease-out);
+    }
+    .affix.has-value .affix__unit { opacity: 1; }
     .hint { display: none; font-size: 13px; color: var(--error); margin-top: 6px; }
     .field.invalid .hint { display: block; }
 
@@ -271,8 +321,12 @@
     .done__text { font-size: 16px; color: var(--ink-soft); max-width: 32ch; margin: 0 auto; }
 
     @media (prefers-reduced-motion: reduce) {
-      .step.is-active, .done.is-active { animation: none; }
-      .meter__seg { transition: none; }
+      .step.is-active .stack > *,
+      .step.is-active .intro > *,
+      .header.anim .header__step,
+      .header.anim .header__count,
+      .done.is-active { animation: none; opacity: 1; }
+      .track__fill { transition: none; }
     }
   </style>
 </head>
@@ -285,7 +339,7 @@
         <span class="header__step" id="stepName"></span>
         <span class="header__count" id="stepCount"></span>
       </div>
-      <div class="meter" id="meter"></div>
+      <div class="track" id="track"><div class="track__fill" id="trackFill"></div></div>
     </header>
 
     <!-- Content -->
@@ -297,7 +351,7 @@
           <div class="intro">
             <p class="intro__eyebrow">לעסקים קטנים ובינוניים</p>
             <h1 class="intro__title">שאלון התאמה<br>לצמיחה עסקית</h1>
-            <p class="intro__lead">כמה שאלות קצרות על העסק, השיווק והמטרות שלך — כדי להבין איפה אפשר לצמוח. המילוי לוקח כ-2 דקות.</p>
+            <p class="intro__lead">שאלות בסיסיות על העסק שלך על מנת להבין אם הוא מתאים לפיילוט הצמיחה העסקית. יש לענות בכנות ולא לייפות את המציאות. המטרה היא לעזור לכם.</p>
             <p class="intro__note">הטופס מנוסח בלשון זכר מטעמי נוחות בלבד, ופונה לשני המינים כאחד.</p>
             <button type="button" class="btn intro__cta" data-next>התחל שאלון</button>
           </div>
@@ -307,7 +361,7 @@
         <section class="step" data-section="היכרות" data-count>
           <div class="stack">
             <div class="field">
-              <label for="ownerName">שם בעל העסק</label>
+              <label for="ownerName">שם מלא</label>
               <input type="text" id="ownerName" name="ownerName" required>
               <span class="hint">נא למלא שם</span>
             </div>
@@ -360,7 +414,10 @@
               </div>
               <div class="field">
                 <label for="margin">אחוזי רווח משוערים</label>
-                <input type="text" id="margin" name="margin" inputmode="numeric" maxlength="2" required>
+                <div class="affix" id="marginAffix">
+                  <input type="text" id="margin" name="margin" inputmode="numeric" maxlength="2" dir="ltr" required>
+                  <span class="affix__unit">%</span>
+                </div>
                 <span class="hint">עד 2 ספרות</span>
               </div>
             </div>
@@ -479,19 +536,11 @@
     const header = document.getElementById('header');
     const stepName = document.getElementById('stepName');
     const stepCount = document.getElementById('stepCount');
-    const meter = document.getElementById('meter');
+    const trackFill = document.getElementById('trackFill');
     const footer = document.getElementById('footer');
     const backBtn = document.getElementById('back');
     const nextBtn = document.getElementById('next');
     const submitBtn = document.getElementById('submit');
-
-    // Build the progress meter segments
-    for (let s = 0; s < total; s++) {
-      const seg = document.createElement('div');
-      seg.className = 'meter__seg';
-      meter.appendChild(seg);
-    }
-    const segs = Array.from(meter.children);
 
     let i = 0;
 
@@ -508,7 +557,11 @@
         const n = realSteps.indexOf(step) + 1;
         stepName.textContent = step.dataset.section;
         stepCount.textContent = 'שלב ' + n + ' מתוך ' + total;
-        segs.forEach((seg, idx) => seg.classList.toggle('done', idx < n));
+        trackFill.style.width = (n / total) * 100 + '%';
+        // replay header text animation
+        header.classList.remove('anim');
+        void header.offsetWidth;
+        header.classList.add('anim');
         backBtn.hidden = false;
         nextBtn.hidden = isLast;
         submitBtn.hidden = !isLast;
@@ -522,10 +575,14 @@
     const adsOtherText = form.querySelector('input[name="adsOtherText"]');
     const revenueEl = document.getElementById('revenue');
     const marginEl = document.getElementById('margin');
+    const marginAffix = document.getElementById('marginAffix');
 
-    // מספרים בלבד
+    // מספרים בלבד + הצגת % כשיש ערך
     revenueEl.addEventListener('input', () => { revenueEl.value = revenueEl.value.replace(/\D/g, ''); });
-    marginEl.addEventListener('input', () => { marginEl.value = marginEl.value.replace(/\D/g, '').slice(0, 2); });
+    marginEl.addEventListener('input', () => {
+      marginEl.value = marginEl.value.replace(/\D/g, '').slice(0, 2);
+      marginAffix.classList.toggle('has-value', marginEl.value.length > 0);
+    });
 
     adsOther.addEventListener('change', () => adsOtherDetail.classList.toggle('open', adsOther.checked));
     adsOtherText.addEventListener('input', () => adsOtherText.classList.remove('input-invalid'));
