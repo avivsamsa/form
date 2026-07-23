@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>טופס השארת פרטים</title>
+  <style>
+    :root {
+      --brand: #4f46e5;
+      --brand-dark: #4338ca;
+      --bg: #f4f5fb;
+      --card: #ffffff;
+      --text: #1f2333;
+      --muted: #6b7280;
+      --border: #e3e5ee;
+      --error: #dc2626;
+      --radius: 14px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Assistant", "Rubik", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .card {
+      background: var(--card);
+      width: 100%;
+      max-width: 480px;
+      border-radius: var(--radius);
+      box-shadow: 0 10px 40px rgba(31, 35, 51, 0.08);
+      padding: 32px;
+    }
+
+    .card__header { margin-bottom: 24px; }
+    .card__title { margin: 0 0 6px; font-size: 22px; font-weight: 700; }
+    .card__subtitle { margin: 0; color: var(--muted); font-size: 14px; }
+
+    /* Progress */
+    .progress { margin-bottom: 28px; }
+    .progress__bar {
+      height: 6px;
+      background: var(--border);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+    .progress__fill {
+      height: 100%;
+      width: 0%;
+      background: var(--brand);
+      border-radius: 99px;
+      transition: width 0.35s ease;
+    }
+    .progress__label {
+      margin-top: 8px;
+      font-size: 12px;
+      color: var(--muted);
+      text-align: left;
+    }
+
+    /* Steps */
+    .step { display: none; animation: fade 0.3s ease; }
+    .step.is-active { display: block; }
+    @keyframes fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+    .field { margin-bottom: 18px; }
+    .field label {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+    .field input,
+    .field select,
+    .field textarea {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-size: 15px;
+      font-family: inherit;
+      background: #fff;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .field input:focus,
+    .field select:focus,
+    .field textarea:focus {
+      outline: none;
+      border-color: var(--brand);
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
+    }
+    .field textarea { resize: vertical; min-height: 90px; }
+    .field .error-msg {
+      display: none;
+      color: var(--error);
+      font-size: 12.5px;
+      margin-top: 5px;
+    }
+    .field.has-error input,
+    .field.has-error select,
+    .field.has-error textarea { border-color: var(--error); }
+    .field.has-error .error-msg { display: block; }
+
+    /* Actions */
+    .actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 26px;
+    }
+    .btn {
+      flex: 1;
+      padding: 13px 18px;
+      border: none;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: background 0.15s, opacity 0.15s;
+    }
+    .btn--primary { background: var(--brand); color: #fff; }
+    .btn--primary:hover { background: var(--brand-dark); }
+    .btn--ghost {
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid var(--border);
+    }
+    .btn--ghost:hover { background: var(--bg); }
+
+    /* Success */
+    .success { text-align: center; padding: 12px 0; }
+    .success__icon {
+      width: 64px; height: 64px;
+      margin: 0 auto 16px;
+      border-radius: 50%;
+      background: #ecfdf5;
+      color: #059669;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 32px;
+    }
+    .success h2 { margin: 0 0 8px; font-size: 20px; }
+    .success p { margin: 0; color: var(--muted); font-size: 14px; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="card__header">
+      <h1 class="card__title">השארת פרטים</h1>
+      <p class="card__subtitle">מלאו את הפרטים ונחזור אליכם בהקדם</p>
+    </div>
+
+    <div class="progress">
+      <div class="progress__bar"><div class="progress__fill" id="progressFill"></div></div>
+      <div class="progress__label" id="progressLabel">שלב 1 מתוך 3</div>
+    </div>
+
+    <form id="leadForm" novalidate>
+      <!-- Step 1 -->
+      <div class="step is-active" data-step="1">
+        <div class="field">
+          <label for="fullName">שם מלא</label>
+          <input type="text" id="fullName" name="fullName" placeholder="ישראל ישראלי" required>
+          <span class="error-msg">נא להזין שם מלא</span>
+        </div>
+        <div class="field">
+          <label for="phone">טלפון</label>
+          <input type="tel" id="phone" name="phone" placeholder="050-0000000" required>
+          <span class="error-msg">נא להזין מספר טלפון תקין</span>
+        </div>
+      </div>
+
+      <!-- Step 2 -->
+      <div class="step" data-step="2">
+        <div class="field">
+          <label for="email">אימייל</label>
+          <input type="email" id="email" name="email" placeholder="name@example.com" required>
+          <span class="error-msg">נא להזין כתובת אימייל תקינה</span>
+        </div>
+        <div class="field">
+          <label for="topic">נושא הפנייה</label>
+          <select id="topic" name="topic" required>
+            <option value="">בחרו נושא…</option>
+            <option value="sales">מכירות</option>
+            <option value="support">תמיכה</option>
+            <option value="other">אחר</option>
+          </select>
+          <span class="error-msg">נא לבחור נושא</span>
+        </div>
+      </div>
+
+      <!-- Step 3 -->
+      <div class="step" data-step="3">
+        <div class="field">
+          <label for="message">הודעה (אופציונלי)</label>
+          <textarea id="message" name="message" placeholder="כתבו לנו כמה מילים…"></textarea>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button type="button" class="btn btn--ghost" id="prevBtn" style="display:none;">חזרה</button>
+        <button type="button" class="btn btn--primary" id="nextBtn">המשך</button>
+        <button type="submit" class="btn btn--primary" id="submitBtn" style="display:none;">שליחה</button>
+      </div>
+    </form>
+
+    <!-- Success -->
+    <div class="success" id="successScreen" style="display:none;">
+      <div class="success__icon">✓</div>
+      <h2>הפרטים נשלחו!</h2>
+      <p>תודה, קיבלנו את הפנייה ונחזור אליכם בהקדם.</p>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById('leadForm');
+    const steps = Array.from(form.querySelectorAll('.step'));
+    const totalSteps = steps.length;
+    let current = 0;
+
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const submitBtn = document.getElementById('submitBtn');
+    const progressFill = document.getElementById('progressFill');
+    const progressLabel = document.getElementById('progressLabel');
+
+    function updateUI() {
+      steps.forEach((s, i) => s.classList.toggle('is-active', i === current));
+
+      const pct = ((current + 1) / totalSteps) * 100;
+      progressFill.style.width = pct + '%';
+      progressLabel.textContent = `שלב ${current + 1} מתוך ${totalSteps}`;
+
+      prevBtn.style.display = current === 0 ? 'none' : 'block';
+      nextBtn.style.display = current === totalSteps - 1 ? 'none' : 'block';
+      submitBtn.style.display = current === totalSteps - 1 ? 'block' : 'none';
+    }
+
+    function validateStep(index) {
+      const fields = steps[index].querySelectorAll('input, select, textarea');
+      let valid = true;
+      fields.forEach(field => {
+        const wrapper = field.closest('.field');
+        let ok = field.checkValidity() && field.value.trim() !== '' || !field.required;
+        if (field.required && field.value.trim() === '') ok = false;
+        if (field.type === 'email' && field.value && !field.checkValidity()) ok = false;
+        wrapper.classList.toggle('has-error', !ok);
+        if (!ok) valid = false;
+      });
+      return valid;
+    }
+
+    nextBtn.addEventListener('click', () => {
+      if (!validateStep(current)) return;
+      if (current < totalSteps - 1) { current++; updateUI(); }
+    });
+
+    prevBtn.addEventListener('click', () => {
+      if (current > 0) { current--; updateUI(); }
+    });
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (!validateStep(current)) return;
+
+      const data = Object.fromEntries(new FormData(form).entries());
+      console.log('נתוני הטופס:', data);
+
+      form.style.display = 'none';
+      document.querySelector('.progress').style.display = 'none';
+      document.getElementById('successScreen').style.display = 'block';
+    });
+
+    updateUI();
+  </script>
+</body>
+</html>
