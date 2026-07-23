@@ -337,7 +337,6 @@
     <header class="header" id="header" hidden>
       <div class="header__row">
         <span class="header__step" id="stepName"></span>
-        <span class="header__count" id="stepCount"></span>
       </div>
       <div class="track" id="track"><div class="track__fill" id="trackFill"></div></div>
     </header>
@@ -357,8 +356,8 @@
           </div>
         </section>
 
-        <!-- STEP ONE — היכרות -->
-        <section class="step" data-section="היכרות" data-count>
+        <!-- STEP ONE — פרטים בסיסיים -->
+        <section class="step" data-section="פרטים בסיסיים" data-count>
           <div class="stack">
             <div class="field">
               <label for="ownerName">שם מלא</label>
@@ -382,6 +381,12 @@
               <input type="text" id="bizName" name="bizName" required>
               <span class="hint">נא למלא</span>
             </div>
+          </div>
+        </section>
+
+        <!-- STEP TWO — היכרות -->
+        <section class="step" data-section="היכרות" data-count>
+          <div class="stack">
             <div class="field">
               <label for="bizField">תחום העסק</label>
               <input type="text" id="bizField" name="bizField" required>
@@ -424,7 +429,7 @@
           </div>
         </section>
 
-        <!-- STEP TWO — שיווק -->
+        <!-- STEP THREE — שיווק -->
         <section class="step" data-section="שיווק" data-count>
           <div class="stack">
             <div class="field">
@@ -479,7 +484,7 @@
           </div>
         </section>
 
-        <!-- STEP THREE — מיצוב ומטרות -->
+        <!-- STEP FOUR — מיצוב ומטרות -->
         <section class="step" data-section="מיצוב ומטרות" data-count data-last>
           <div class="stack">
             <div class="field">
@@ -535,7 +540,6 @@
 
     const header = document.getElementById('header');
     const stepName = document.getElementById('stepName');
-    const stepCount = document.getElementById('stepCount');
     const trackFill = document.getElementById('trackFill');
     const footer = document.getElementById('footer');
     const backBtn = document.getElementById('back');
@@ -556,7 +560,6 @@
       if (!isIntro) {
         const n = realSteps.indexOf(step) + 1;
         stepName.textContent = step.dataset.section;
-        stepCount.textContent = 'שלב ' + n + ' מתוך ' + total;
         trackFill.style.width = (n / total) * 100 + '%';
         // replay header text animation
         header.classList.remove('anim');
