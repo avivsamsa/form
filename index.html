@@ -2,7 +2,7 @@
 <html lang="he" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>שאלון התאמה לצמיחה עסקית</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,12 +16,13 @@
       --surface: #ffffff;
       --line: #e7e7e4;
       --line-strong: #d4d4d0;
-      --accent: #16150f;
       --error: #b23b2e;
       --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+      --header-h: 76px;
+      --footer-h: 78px;
     }
 
-    * { box-sizing: border-box; }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     html, body { height: 100%; }
 
     body {
@@ -30,72 +31,81 @@
       background: var(--paper);
       color: var(--ink);
       -webkit-font-smoothing: antialiased;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 32px 20px;
       line-height: 1.5;
     }
 
-    .shell {
-      width: 100%;
-      max-width: 560px;
+    .app {
+      display: flex;
+      flex-direction: column;
+      min-height: 100dvh;
+      max-width: 520px;
+      margin: 0 auto;
+      background: var(--paper);
     }
 
-    /* Top meta bar: minimal progress */
-    .meta {
+    /* ---------- Sticky header ---------- */
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: var(--paper);
+      padding: 20px 20px 14px;
+      border-bottom: 1px solid var(--line);
+    }
+    .header[hidden] { display: none; }
+    .header__row {
       display: flex;
       align-items: baseline;
       justify-content: space-between;
-      margin-bottom: 14px;
-      min-height: 18px;
+      margin-bottom: 12px;
     }
-    .meta__section {
+    .header__step { font-size: 17px; font-weight: 600; letter-spacing: -0.01em; }
+    .header__count {
       font-size: 13px;
-      font-weight: 500;
-      letter-spacing: 0.02em;
-      color: var(--ink-soft);
-    }
-    .meta__count {
-      font-size: 12px;
       font-weight: 500;
       color: var(--ink-faint);
       font-variant-numeric: tabular-nums;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.06em;
     }
-    .track {
-      height: 2px;
-      background: var(--line);
-      border-radius: 2px;
-      overflow: hidden;
-      margin-bottom: 44px;
+    .meter { display: flex; gap: 6px; }
+    .meter__seg {
+      flex: 1;
+      height: 4px;
+      border-radius: 3px;
+      background: var(--line-strong);
+      transition: background 0.4s var(--ease-out);
     }
-    .track__fill {
-      height: 100%;
-      width: 0%;
-      background: var(--ink);
-      transition: width 0.5s var(--ease-out);
+    .meter__seg.done { background: var(--ink); }
+
+    /* ---------- Scrollable content ---------- */
+    .content {
+      flex: 1;
+      padding: 26px 20px 30px;
     }
 
-    /* Steps */
     .step { display: none; }
-    .step.is-active { display: block; animation: rise 0.4s var(--ease-out); }
+    .step.is-active { display: block; animation: rise 0.35s var(--ease-out); }
     @keyframes rise {
       from { opacity: 0; transform: translateY(10px); }
       to { opacity: 1; transform: none; }
     }
 
-    /* Intro (step zero) */
-    .intro { padding: 8px 0 4px; }
+    /* Intro (step zero) — full screen cover */
+    .intro {
+      min-height: calc(100dvh - 52px);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 20px 4px;
+    }
     .intro__eyebrow {
-      font-size: 13px;
+      font-size: 14px;
       font-weight: 500;
-      letter-spacing: 0.04em;
       color: var(--ink-faint);
-      margin: 0 0 20px;
+      margin: 0 0 18px;
     }
     .intro__title {
-      font-size: clamp(30px, 6vw, 44px);
+      font-size: clamp(32px, 9vw, 46px);
       font-weight: 600;
       line-height: 1.12;
       letter-spacing: -0.02em;
@@ -104,27 +114,32 @@
     .intro__lead {
       font-size: 16px;
       color: var(--ink-soft);
-      max-width: 40ch;
-      margin: 0 0 40px;
+      max-width: 34ch;
+      margin: 0 0 20px;
     }
-
-    /* Section heading inside real steps */
-    .heading {
-      font-size: 24px;
-      font-weight: 600;
-      letter-spacing: -0.01em;
+    .intro__note {
+      font-size: 13px;
+      color: var(--ink-faint);
+      max-width: 36ch;
       margin: 0 0 32px;
     }
+    .intro__cta { align-self: flex-start; }
+    @media (max-width: 460px) { .intro__cta { align-self: stretch; text-align: center; } }
 
-    /* Fields — underline style */
-    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 26px 24px; }
-    .grid .full { grid-column: 1 / -1; }
-    @media (max-width: 460px) { .grid { grid-template-columns: 1fr; } }
+    .consent {
+      font-size: 12.5px;
+      line-height: 1.6;
+      color: var(--ink-faint);
+      margin: 6px 0 0;
+    }
 
-    .field { position: relative; }
+    /* Fields */
+    .stack { display: flex; flex-direction: column; gap: 22px; }
+    .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
     .field > label {
       display: block;
-      font-size: 13px;
+      font-size: 14px;
       font-weight: 500;
       color: var(--ink-soft);
       margin-bottom: 8px;
@@ -132,13 +147,12 @@
     .field input[type="text"],
     .field input[type="tel"],
     .field input[type="email"],
-    .field input[type="number"],
     .field textarea {
       width: 100%;
       border: 1.5px solid var(--line-strong);
-      border-radius: 10px;
+      border-radius: 12px;
       background: var(--surface);
-      padding: 12px 14px;
+      padding: 13px 15px;
       font-family: inherit;
       font-size: 16px;
       color: var(--ink);
@@ -153,325 +167,331 @@
       box-shadow: 0 0 0 3px rgba(22, 21, 15, 0.08);
     }
     .field textarea { resize: none; line-height: 1.55; }
-
     .field.invalid input,
     .field.invalid textarea { border-color: var(--error); box-shadow: none; }
-    .hint {
-      display: none;
-      font-size: 12px;
-      color: var(--error);
-      margin-top: 6px;
-    }
+    .hint { display: none; font-size: 13px; color: var(--error); margin-top: 6px; }
     .field.invalid .hint { display: block; }
 
-    /* Segmented control */
-    .segmented {
-      display: flex;
-      gap: 10px;
-    }
-    .segmented label {
-      flex: 1;
-      position: relative;
-      cursor: pointer;
-    }
+    /* Segmented (single choice) */
+    .segmented { display: flex; gap: 10px; }
+    .segmented label { flex: 1; position: relative; cursor: pointer; }
     .segmented input { position: absolute; opacity: 0; pointer-events: none; }
     .segmented span {
       display: block;
       text-align: center;
-      padding: 12px 16px;
+      padding: 13px 8px;
       font-size: 15px;
       font-weight: 500;
       color: var(--ink-soft);
       background: var(--surface);
       border: 1.5px solid var(--line-strong);
-      border-radius: 10px;
+      border-radius: 12px;
       transition: color 0.15s, background 0.15s, border-color 0.15s;
     }
-    .segmented label:hover span { border-color: var(--ink-faint); }
-    .segmented input:checked + span {
-      background: var(--ink);
-      border-color: var(--ink);
-      color: var(--surface);
-    }
+    .segmented input:checked + span { background: var(--ink); border-color: var(--ink); color: var(--surface); }
 
-    /* Choice list (checkboxes) */
+    /* Choices (multi) */
     .choices { display: flex; flex-direction: column; gap: 10px; }
     .choice {
       display: flex;
       align-items: center;
       gap: 13px;
-      padding: 13px 15px;
+      padding: 14px 15px;
       cursor: pointer;
       border: 1.5px solid var(--line-strong);
-      border-radius: 10px;
+      border-radius: 12px;
       background: var(--surface);
       transition: border-color 0.15s var(--ease-out), background 0.15s var(--ease-out);
     }
-    .choice:hover { border-color: var(--ink-faint); }
     .choice:has(input:checked) { border-color: var(--ink); background: #fafafa; }
     .choice input { position: absolute; opacity: 0; pointer-events: none; }
     .choice .box {
       flex: 0 0 auto;
-      width: 20px;
-      height: 20px;
+      width: 21px; height: 21px;
       border: 1.5px solid var(--line-strong);
-      border-radius: 6px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      border-radius: 7px;
+      display: flex; align-items: center; justify-content: center;
       transition: background 0.15s var(--ease-out), border-color 0.15s var(--ease-out);
     }
-    .choice .box svg { width: 12px; height: 12px; stroke: var(--surface); stroke-width: 2.5; fill: none; opacity: 0; transform: scale(0.6); transition: opacity 0.15s, transform 0.15s var(--ease-out); }
+    .choice .box svg { width: 12px; height: 12px; stroke: var(--surface); stroke-width: 2.6; fill: none; opacity: 0; transform: scale(0.6); transition: opacity 0.15s, transform 0.15s var(--ease-out); }
     .choice input:checked + .box { background: var(--ink); border-color: var(--ink); }
     .choice input:checked + .box svg { opacity: 1; transform: scale(1); }
-    .choice .box + span { font-size: 15.5px; color: var(--ink); }
+    .choice .box + span { font-size: 16px; color: var(--ink); }
 
     .other-detail {
-      max-height: 0;
-      overflow: hidden;
-      opacity: 0;
+      max-height: 0; overflow: hidden; opacity: 0;
       transition: max-height 0.35s var(--ease-out), opacity 0.25s var(--ease-out), margin 0.35s var(--ease-out);
     }
     .other-detail.open { max-height: 80px; opacity: 1; margin-top: 10px; }
+    .input-invalid { border-color: var(--error) !important; box-shadow: none !important; }
+    .block-label { font-size: 14px; font-weight: 500; color: var(--ink-soft); margin-bottom: 12px; }
 
-    .label-block {
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--ink-soft);
-      margin-bottom: 12px;
-    }
-
-    /* Footer / actions */
-    .foot {
+    /* ---------- Sticky footer ---------- */
+    .footer {
+      position: sticky;
+      bottom: 0;
+      z-index: 10;
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      margin-top: 48px;
+      gap: 14px;
+      padding: 14px 20px calc(14px + env(safe-area-inset-bottom));
+      background: var(--paper);
+      border-top: 1px solid var(--line);
     }
+    .footer[hidden] { display: none; }
     .back {
-      background: none;
-      border: none;
-      font-family: inherit;
-      font-size: 15px;
-      color: var(--ink-faint);
-      cursor: pointer;
-      padding: 8px 0;
-      transition: color 0.2s;
+      background: none; border: none; font-family: inherit;
+      font-size: 15px; font-weight: 500; color: var(--ink-soft);
+      cursor: pointer; padding: 12px 4px; transition: color 0.2s;
     }
     .back:hover { color: var(--ink); }
-    .back[hidden] { visibility: hidden; }
+    .back[hidden] { display: none; }
 
     .btn {
-      appearance: none;
-      border: none;
-      font-family: inherit;
-      font-size: 15.5px;
-      font-weight: 500;
-      color: var(--surface);
-      background: var(--ink);
-      padding: 14px 34px;
-      border-radius: 11px;
-      cursor: pointer;
-      transition: transform 0.16s var(--ease-out), background 0.2s;
+      appearance: none; border: none; font-family: inherit;
+      font-size: 16px; font-weight: 500; color: var(--surface);
+      background: var(--ink); border-radius: 12px; cursor: pointer;
+      padding: 15px 28px;
+      transition: transform 0.16s var(--ease-out), background 0.2s, opacity 0.2s;
     }
-    .btn:hover { background: #000; }
-    .btn:active { transform: scale(0.97); }
-    .btn--wide { width: 100%; padding: 16px; font-size: 16px; }
+    .btn:active { transform: scale(0.98); }
+    .btn:disabled { opacity: 0.6; cursor: default; }
+    .btn--grow { flex: 1; }
 
     /* Success */
-    .done { display: none; padding: 20px 0; }
-    .done.is-active { display: block; animation: rise 0.5s var(--ease-out); }
-    .done__title {
-      font-size: clamp(26px, 5vw, 36px);
-      font-weight: 600;
-      letter-spacing: -0.01em;
-      margin: 0 0 14px;
+    .done { display: none; min-height: 100dvh; align-items: center; justify-content: center; padding: 40px 24px; text-align: center; }
+    .done.is-active { display: flex; animation: rise 0.5s var(--ease-out); }
+    .done__mark {
+      width: 60px; height: 60px; margin: 0 auto 22px;
+      border-radius: 50%; border: 1.5px solid var(--ink);
+      display: flex; align-items: center; justify-content: center;
     }
-    .done__text { font-size: 16px; color: var(--ink-soft); max-width: 38ch; margin: 0; }
+    .done__mark svg { width: 26px; height: 26px; stroke: var(--ink); stroke-width: 2; fill: none; }
+    .done__title { font-size: clamp(26px, 7vw, 34px); font-weight: 600; letter-spacing: -0.01em; margin: 0 0 12px; }
+    .done__text { font-size: 16px; color: var(--ink-soft); max-width: 32ch; margin: 0 auto; }
 
     @media (prefers-reduced-motion: reduce) {
       .step.is-active, .done.is-active { animation: none; }
-      .track__fill { transition: none; }
+      .meter__seg { transition: none; }
     }
   </style>
 </head>
 <body>
-  <div class="shell">
+  <div class="app">
 
-    <div class="meta" id="meta" hidden>
-      <span class="meta__section" id="metaSection"></span>
-      <span class="meta__count" id="metaCount"></span>
-    </div>
-    <div class="track" id="track" hidden><div class="track__fill" id="trackFill"></div></div>
-
-    <form id="form" novalidate>
-
-      <!-- STEP ZERO — פתיח -->
-      <section class="step is-active" data-section="פתיח">
-        <div class="intro">
-          <p class="intro__eyebrow">לעסקים קטנים ובינוניים</p>
-          <h1 class="intro__title">שאלון התאמה<br>לצמיחה עסקית</h1>
-          <p class="intro__lead">כמה שאלות קצרות שיעזרו לנו להבין את העסק שלך ואיפה אפשר לצמוח.</p>
-          <button type="button" class="btn" data-next>התחל שאלון</button>
-        </div>
-      </section>
-
-      <!-- STEP ONE — היכרות -->
-      <section class="step" data-section="היכרות" data-count>
-        <h2 class="heading">היכרות</h2>
-        <div class="grid">
-          <div class="field">
-            <label for="ownerName">שם בעל העסק</label>
-            <input type="text" id="ownerName" name="ownerName" required>
-            <span class="hint">נא למלא שם</span>
-          </div>
-          <div class="field">
-            <label for="phone">טלפון</label>
-            <input type="tel" id="phone" name="phone" inputmode="tel" required>
-            <span class="hint">נא למלא טלפון תקין</span>
-          </div>
-          <div class="field full">
-            <label for="email">מייל</label>
-            <input type="email" id="email" name="email" inputmode="email" required>
-            <span class="hint">נא למלא כתובת מייל תקינה</span>
-          </div>
-          <div class="field">
-            <label for="bizName">שם העסק</label>
-            <input type="text" id="bizName" name="bizName">
-          </div>
-          <div class="field">
-            <label for="bizField">תחום העסק</label>
-            <input type="text" id="bizField" name="bizField">
-          </div>
-          <div class="field full">
-            <label for="bizAbout">ספר על העסק בכמה מילים</label>
-            <textarea id="bizAbout" name="bizAbout" rows="2"></textarea>
-          </div>
-          <div class="field full">
-            <label for="product">מה המוצר או השירות שנמכר</label>
-            <input type="text" id="product" name="product">
-          </div>
-          <div class="field full">
-            <div class="label-block">האם אתה מוכר באונליין, אופליין או גם וגם</div>
-            <div class="segmented">
-              <label><input type="radio" name="channel" value="אונליין"><span>אונליין</span></label>
-              <label><input type="radio" name="channel" value="אופליין"><span>אופליין</span></label>
-              <label><input type="radio" name="channel" value="גם וגם"><span>גם וגם</span></label>
-            </div>
-          </div>
-          <div class="field">
-            <label for="revenue">מחזור חודשי משוער</label>
-            <input type="text" id="revenue" name="revenue" inputmode="numeric">
-          </div>
-          <div class="field">
-            <label for="margin">אחוזי רווח משוערים</label>
-            <input type="text" id="margin" name="margin" inputmode="numeric">
-          </div>
-        </div>
-      </section>
-
-      <!-- STEP TWO — שיווק -->
-      <section class="step" data-section="שיווק" data-count>
-        <h2 class="heading">שיווק</h2>
-        <div class="grid">
-          <div class="field full">
-            <label for="audience">לאיזה קהל אתה מוכר הכי הרבה</label>
-            <input type="text" id="audience" name="audience">
-          </div>
-          <div class="field full">
-            <label for="bestseller">מה הדבר הכי נמכר</label>
-            <input type="text" id="bestseller" name="bestseller">
-          </div>
-          <div class="field full">
-            <div class="label-block">איפה אתה מפרסם את העסק</div>
-            <div class="choices">
-              <label class="choice">
-                <input type="checkbox" name="ads" value="קבוצות פייסבוק / ווטסאפ">
-                <span class="box"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>
-                <span>קבוצות פייסבוק / ווטסאפ</span>
-              </label>
-              <label class="choice">
-                <input type="checkbox" name="ads" value="רשתות חברתיות">
-                <span class="box"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>
-                <span>רשתות חברתיות</span>
-              </label>
-              <label class="choice">
-                <input type="checkbox" name="ads" value="ממומן ברשתות">
-                <span class="box"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>
-                <span>ממומן ברשתות החברתיות</span>
-              </label>
-              <label class="choice">
-                <input type="checkbox" name="ads" value="פה לאוזן">
-                <span class="box"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>
-                <span>פה לאוזן</span>
-              </label>
-              <label class="choice">
-                <input type="checkbox" name="ads" value="פרסום אופליין">
-                <span class="box"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>
-                <span>פרסום אופליין</span>
-              </label>
-              <label class="choice">
-                <input type="checkbox" name="ads" value="אחר" id="adsOther">
-                <span class="box"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>
-                <span>אחר</span>
-              </label>
-            </div>
-            <div class="other-detail" id="adsOtherDetail">
-              <input type="text" name="adsOtherText" placeholder="פירוט">
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- STEP THREE — מיצוב ומטרות -->
-      <section class="step" data-section="מיצוב ומטרות" data-count data-last>
-        <h2 class="heading">מיצוב ומטרות</h2>
-        <div class="grid">
-          <div class="field full">
-            <label for="goal">לאן היית רוצה לקחת את העסק שלך</label>
-            <textarea id="goal" name="goal" rows="2"></textarea>
-          </div>
-          <div class="field full">
-            <label for="working">מה כן עובד טוב בעסק</label>
-            <textarea id="working" name="working" rows="2"></textarea>
-          </div>
-          <div class="field full">
-            <label for="notWorking">מה לא עובד טוב בעסק</label>
-            <textarea id="notWorking" name="notWorking" rows="2"></textarea>
-          </div>
-        </div>
-      </section>
-
-      <div class="foot" id="foot" hidden>
-        <button type="button" class="back" id="back">חזרה</button>
-        <button type="button" class="btn" id="next">המשך</button>
-        <button type="submit" class="btn" id="submit" hidden>שליחה</button>
+    <!-- Sticky header -->
+    <header class="header" id="header" hidden>
+      <div class="header__row">
+        <span class="header__step" id="stepName"></span>
+        <span class="header__count" id="stepCount"></span>
       </div>
-    </form>
+      <div class="meter" id="meter"></div>
+    </header>
+
+    <!-- Content -->
+    <main class="content">
+      <form id="form" novalidate>
+
+        <!-- STEP ZERO — פתיח -->
+        <section class="step is-active" data-section="פתיח">
+          <div class="intro">
+            <p class="intro__eyebrow">לעסקים קטנים ובינוניים</p>
+            <h1 class="intro__title">שאלון התאמה<br>לצמיחה עסקית</h1>
+            <p class="intro__lead">כמה שאלות קצרות על העסק, השיווק והמטרות שלך — כדי להבין איפה אפשר לצמוח. המילוי לוקח כ-2 דקות.</p>
+            <p class="intro__note">הטופס מנוסח בלשון זכר מטעמי נוחות בלבד, ופונה לשני המינים כאחד.</p>
+            <button type="button" class="btn intro__cta" data-next>התחל שאלון</button>
+          </div>
+        </section>
+
+        <!-- STEP ONE — היכרות -->
+        <section class="step" data-section="היכרות" data-count>
+          <div class="stack">
+            <div class="field">
+              <label for="ownerName">שם בעל העסק</label>
+              <input type="text" id="ownerName" name="ownerName" required>
+              <span class="hint">נא למלא שם</span>
+            </div>
+            <div class="row2">
+              <div class="field">
+                <label for="phone">טלפון</label>
+                <input type="tel" id="phone" name="phone" inputmode="tel" required>
+                <span class="hint">טלפון תקין</span>
+              </div>
+              <div class="field">
+                <label for="email">מייל</label>
+                <input type="email" id="email" name="email" inputmode="email" required>
+                <span class="hint">מייל תקין</span>
+              </div>
+            </div>
+            <div class="field">
+              <label for="bizName">שם העסק</label>
+              <input type="text" id="bizName" name="bizName" required>
+              <span class="hint">נא למלא</span>
+            </div>
+            <div class="field">
+              <label for="bizField">תחום העסק</label>
+              <input type="text" id="bizField" name="bizField" required>
+              <span class="hint">נא למלא</span>
+            </div>
+            <div class="field">
+              <label for="bizAbout">ספר על העסק בכמה מילים</label>
+              <textarea id="bizAbout" name="bizAbout" rows="2" required></textarea>
+              <span class="hint">נא למלא</span>
+            </div>
+            <div class="field">
+              <label for="product">מה המוצר או השירות שנמכר</label>
+              <input type="text" id="product" name="product" required>
+              <span class="hint">נא למלא</span>
+            </div>
+            <div class="field" data-req-radio="channel">
+              <div class="block-label">האם אתה מוכר באונליין, אופליין או גם וגם</div>
+              <div class="segmented">
+                <label><input type="radio" name="channel" value="אונליין"><span>אונליין</span></label>
+                <label><input type="radio" name="channel" value="אופליין"><span>אופליין</span></label>
+                <label><input type="radio" name="channel" value="גם וגם"><span>גם וגם</span></label>
+              </div>
+              <span class="hint">נא לבחור</span>
+            </div>
+            <div class="row2">
+              <div class="field">
+                <label for="revenue">מחזור חודשי משוער</label>
+                <input type="text" id="revenue" name="revenue" inputmode="numeric" required>
+                <span class="hint">מספרים בלבד</span>
+              </div>
+              <div class="field">
+                <label for="margin">אחוזי רווח משוערים</label>
+                <input type="text" id="margin" name="margin" inputmode="numeric" maxlength="2" required>
+                <span class="hint">עד 2 ספרות</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- STEP TWO — שיווק -->
+        <section class="step" data-section="שיווק" data-count>
+          <div class="stack">
+            <div class="field">
+              <label for="audience">לאיזה קהל אתה מוכר הכי הרבה</label>
+              <input type="text" id="audience" name="audience" required>
+              <span class="hint">נא למלא</span>
+            </div>
+            <div class="field">
+              <label for="bestseller">מה הדבר הכי נמכר</label>
+              <input type="text" id="bestseller" name="bestseller" required>
+              <span class="hint">נא למלא</span>
+            </div>
+            <div class="field" data-req-check="ads">
+              <div class="block-label">איפה אתה מפרסם את העסק</div>
+              <div class="choices">
+                <label class="choice">
+                  <input type="checkbox" name="ads" value="קבוצות פייסבוק / ווטסאפ">
+                  <span class="box"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>
+                  <span>קבוצות פייסבוק / ווטסאפ</span>
+                </label>
+                <label class="choice">
+                  <input type="checkbox" name="ads" value="רשתות חברתיות">
+                  <span class="box"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>
+                  <span>רשתות חברתיות</span>
+                </label>
+                <label class="choice">
+                  <input type="checkbox" name="ads" value="ממומן ברשתות">
+                  <span class="box"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>
+                  <span>ממומן ברשתות החברתיות</span>
+                </label>
+                <label class="choice">
+                  <input type="checkbox" name="ads" value="פה לאוזן">
+                  <span class="box"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>
+                  <span>פה לאוזן</span>
+                </label>
+                <label class="choice">
+                  <input type="checkbox" name="ads" value="פרסום אופליין">
+                  <span class="box"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>
+                  <span>פרסום אופליין</span>
+                </label>
+                <label class="choice">
+                  <input type="checkbox" name="ads" value="אחר" id="adsOther">
+                  <span class="box"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>
+                  <span>אחר</span>
+                </label>
+              </div>
+              <div class="other-detail" id="adsOtherDetail">
+                <input type="text" name="adsOtherText" placeholder="פירוט">
+              </div>
+              <span class="hint">נא לבחור לפחות אפשרות אחת</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- STEP THREE — מיצוב ומטרות -->
+        <section class="step" data-section="מיצוב ומטרות" data-count data-last>
+          <div class="stack">
+            <div class="field">
+              <label for="goal">לאן היית רוצה לקחת את העסק שלך</label>
+              <textarea id="goal" name="goal" rows="3" required></textarea>
+              <span class="hint">נא למלא</span>
+            </div>
+            <div class="field">
+              <label for="working">מה כן עובד טוב בעסק</label>
+              <textarea id="working" name="working" rows="3" required></textarea>
+              <span class="hint">נא למלא</span>
+            </div>
+            <div class="field">
+              <label for="notWorking">מה לא עובד טוב בעסק</label>
+              <textarea id="notWorking" name="notWorking" rows="3" required></textarea>
+              <span class="hint">נא למלא</span>
+            </div>
+            <p class="consent">בעת שליחת הטופס אני מאשר/ת קבלת דיוור שיווקי ופרסומי, לרבות באמצעות דוא״ל, מסרונים (SMS) ו-WhatsApp, בהתאם לסעיף 30א לחוק התקשורת (בזק ושידורים), התשמ״ב-1982. ידוע לי שאוכל להסיר את הסכמתי ולבקש הסרה מרשימת התפוצה בכל עת.</p>
+          </div>
+        </section>
+
+      </form>
+    </main>
+
+    <!-- Sticky footer -->
+    <footer class="footer" id="footer" hidden>
+      <button type="button" class="back" id="back">חזרה</button>
+      <button type="button" class="btn btn--grow" id="next">המשך</button>
+      <button type="button" class="btn btn--grow" id="submit" hidden>שליחה</button>
+    </footer>
 
     <!-- Success -->
     <div class="done" id="done">
-      <h2 class="done__title">תודה רבה</h2>
-      <p class="done__text">קיבלנו את הפרטים. נעבור עליהם ונחזור אליך בהקדם.</p>
+      <div>
+        <div class="done__mark"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <h2 class="done__title">תודה רבה</h2>
+        <p class="done__text">קיבלנו את הפרטים. נעבור עליהם ונחזור אליך בהקדם.</p>
+      </div>
     </div>
 
   </div>
 
   <script>
+    /* ====== יעד שמירת הנתונים ======
+       הדבק כאן את כתובת ה-Web App מ-Google Apps Script (מסתיימת ב-/exec).
+       עד שתדביק — הנתונים יודפסו רק ל-console ולא יישמרו. */
+    const ENDPOINT = "";
+
     const form = document.getElementById('form');
     const steps = Array.from(form.querySelectorAll('.step'));
     const realSteps = steps.filter(s => s.hasAttribute('data-count'));
     const total = realSteps.length;
 
-    const meta = document.getElementById('meta');
-    const metaSection = document.getElementById('metaSection');
-    const metaCount = document.getElementById('metaCount');
-    const track = document.getElementById('track');
-    const trackFill = document.getElementById('trackFill');
-    const foot = document.getElementById('foot');
+    const header = document.getElementById('header');
+    const stepName = document.getElementById('stepName');
+    const stepCount = document.getElementById('stepCount');
+    const meter = document.getElementById('meter');
+    const footer = document.getElementById('footer');
     const backBtn = document.getElementById('back');
     const nextBtn = document.getElementById('next');
     const submitBtn = document.getElementById('submit');
+
+    // Build the progress meter segments
+    for (let s = 0; s < total; s++) {
+      const seg = document.createElement('div');
+      seg.className = 'meter__seg';
+      meter.appendChild(seg);
+    }
+    const segs = Array.from(meter.children);
 
     let i = 0;
 
@@ -481,72 +501,121 @@
       const isIntro = !step.hasAttribute('data-count');
       const isLast = step.hasAttribute('data-last');
 
-      meta.hidden = isIntro;
-      track.hidden = isIntro;
-      foot.hidden = isIntro;
+      header.hidden = isIntro;
+      footer.hidden = isIntro;
 
       if (!isIntro) {
         const n = realSteps.indexOf(step) + 1;
-        metaSection.textContent = step.dataset.section;
-        metaCount.textContent = String(n).padStart(2, '0') + ' / ' + String(total).padStart(2, '0');
-        trackFill.style.width = (n / total) * 100 + '%';
+        stepName.textContent = step.dataset.section;
+        stepCount.textContent = 'שלב ' + n + ' מתוך ' + total;
+        segs.forEach((seg, idx) => seg.classList.toggle('done', idx < n));
         backBtn.hidden = false;
         nextBtn.hidden = isLast;
         submitBtn.hidden = !isLast;
       }
+      document.querySelector('.content').scrollTop = 0;
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
+    const adsOther = document.getElementById('adsOther');
+    const adsOtherDetail = document.getElementById('adsOtherDetail');
+    const adsOtherText = form.querySelector('input[name="adsOtherText"]');
+    const revenueEl = document.getElementById('revenue');
+    const marginEl = document.getElementById('margin');
+
+    // מספרים בלבד
+    revenueEl.addEventListener('input', () => { revenueEl.value = revenueEl.value.replace(/\D/g, ''); });
+    marginEl.addEventListener('input', () => { marginEl.value = marginEl.value.replace(/\D/g, '').slice(0, 2); });
+
+    adsOther.addEventListener('change', () => adsOtherDetail.classList.toggle('open', adsOther.checked));
+    adsOtherText.addEventListener('input', () => adsOtherText.classList.remove('input-invalid'));
+
     function validate(step) {
       let ok = true;
-      step.querySelectorAll('[required]').forEach(el => {
+      // שדות טקסט
+      step.querySelectorAll('input[required], textarea[required]').forEach(el => {
         const field = el.closest('.field');
         const valid = el.checkValidity() && el.value.trim() !== '';
         field.classList.toggle('invalid', !valid);
         if (!valid) ok = false;
+      });
+      // בחירה יחידה (רדיו)
+      step.querySelectorAll('[data-req-radio]').forEach(field => {
+        const chosen = field.querySelector('input[name="' + field.dataset.reqRadio + '"]:checked');
+        field.classList.toggle('invalid', !chosen);
+        if (!chosen) ok = false;
+      });
+      // בחירה מרובה (צ'קבוקס)
+      step.querySelectorAll('[data-req-check]').forEach(field => {
+        const any = field.querySelector('input[name="' + field.dataset.reqCheck + '"]:checked');
+        let groupOk = !!any;
+        if (adsOther.checked && adsOtherText.value.trim() === '') {
+          groupOk = false;
+          adsOtherText.classList.add('input-invalid');
+        }
+        field.classList.toggle('invalid', !groupOk);
+        if (!groupOk) ok = false;
       });
       return ok;
     }
 
     form.querySelectorAll('[data-next]').forEach(b => b.addEventListener('click', go));
     nextBtn.addEventListener('click', go);
-
     function go() {
       const step = steps[i];
       if (step.hasAttribute('data-count') && !validate(step)) return;
       if (i < steps.length - 1) { i++; render(); }
     }
-
     backBtn.addEventListener('click', () => { if (i > 0) { i--; render(); } });
 
-    // Clear invalid state as the user types
     form.addEventListener('input', e => {
       const field = e.target.closest('.field.invalid');
       if (field) field.classList.remove('invalid');
     });
 
-    // "אחר" reveal
-    const adsOther = document.getElementById('adsOther');
-    const adsOtherDetail = document.getElementById('adsOtherDetail');
-    adsOther.addEventListener('change', () => adsOtherDetail.classList.toggle('open', adsOther.checked));
-
-    form.addEventListener('submit', e => {
-      e.preventDefault();
-      if (!validate(steps[i])) return;
-
+    function collect() {
       const data = {};
       new FormData(form).forEach((v, k) => {
         if (data[k] !== undefined) data[k] = [].concat(data[k], v);
         else data[k] = v;
       });
-      console.log('נתוני השאלון:', data);
+      return data;
+    }
 
-      form.style.display = 'none';
-      meta.hidden = true;
-      track.hidden = true;
+    submitBtn.addEventListener('click', async () => {
+      if (!validate(steps[i])) return;
+      const payload = collect();
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'שולח…';
+
+      try {
+        if (ENDPOINT) {
+          await fetch(ENDPOINT, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify(payload)
+          });
+        } else {
+          console.log('נתוני השאלון (ENDPOINT לא הוגדר):', payload);
+        }
+        showDone();
+      } catch (err) {
+        console.error(err);
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'שליחה';
+        alert('הייתה תקלה בשליחה. נסה שוב בבקשה.');
+      }
+    });
+
+    function showDone() {
+      document.querySelector('.content').style.display = 'none';
+      header.hidden = true;
+      footer.hidden = true;
       document.getElementById('done').classList.add('is-active');
       window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
+    }
 
     render();
   </script>
