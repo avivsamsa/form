@@ -3,282 +3,545 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>טופס השארת פרטים</title>
+  <title>שאלון התאמה לצמיחה עסקית</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --brand: #4f46e5;
-      --brand-dark: #4338ca;
-      --bg: #f4f5fb;
-      --card: #ffffff;
-      --text: #1f2333;
-      --muted: #6b7280;
-      --border: #e3e5ee;
-      --error: #dc2626;
-      --radius: 14px;
+      --ink: #16150f;
+      --ink-soft: #57544a;
+      --ink-faint: #9a968a;
+      --paper: #f6f4ef;
+      --surface: #fbfaf7;
+      --line: #e2ded4;
+      --line-strong: #cfcabd;
+      --accent: #16150f;
+      --error: #b23b2e;
+      --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
     }
 
     * { box-sizing: border-box; }
+    html, body { height: 100%; }
 
     body {
       margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Assistant", "Rubik", Arial, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
+      font-family: "Heebo", -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+      background: var(--paper);
+      color: var(--ink);
+      -webkit-font-smoothing: antialiased;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 24px;
+      padding: 32px 20px;
+      line-height: 1.5;
     }
 
-    .card {
-      background: var(--card);
+    .shell {
       width: 100%;
-      max-width: 480px;
-      border-radius: var(--radius);
-      box-shadow: 0 10px 40px rgba(31, 35, 51, 0.08);
-      padding: 32px;
+      max-width: 560px;
     }
 
-    .card__header { margin-bottom: 24px; }
-    .card__title { margin: 0 0 6px; font-size: 22px; font-weight: 700; }
-    .card__subtitle { margin: 0; color: var(--muted); font-size: 14px; }
-
-    /* Progress */
-    .progress { margin-bottom: 28px; }
-    .progress__bar {
-      height: 6px;
-      background: var(--border);
-      border-radius: 99px;
+    /* Top meta bar: minimal progress */
+    .meta {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 14px;
+      min-height: 18px;
+    }
+    .meta__section {
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      color: var(--ink-soft);
+    }
+    .meta__count {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--ink-faint);
+      font-variant-numeric: tabular-nums;
+      letter-spacing: 0.08em;
+    }
+    .track {
+      height: 2px;
+      background: var(--line);
+      border-radius: 2px;
       overflow: hidden;
+      margin-bottom: 44px;
     }
-    .progress__fill {
+    .track__fill {
       height: 100%;
       width: 0%;
-      background: var(--brand);
-      border-radius: 99px;
-      transition: width 0.35s ease;
-    }
-    .progress__label {
-      margin-top: 8px;
-      font-size: 12px;
-      color: var(--muted);
-      text-align: left;
+      background: var(--ink);
+      transition: width 0.5s var(--ease-out);
     }
 
     /* Steps */
-    .step { display: none; animation: fade 0.3s ease; }
-    .step.is-active { display: block; }
-    @keyframes fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
-
-    .field { margin-bottom: 18px; }
-    .field label {
-      display: block;
-      font-size: 14px;
-      font-weight: 600;
-      margin-bottom: 6px;
+    .step { display: none; }
+    .step.is-active { display: block; animation: rise 0.4s var(--ease-out); }
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: none; }
     }
-    .field input,
-    .field select,
+
+    /* Intro (step zero) */
+    .intro { padding: 8px 0 4px; }
+    .intro__eyebrow {
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      color: var(--ink-faint);
+      margin: 0 0 20px;
+    }
+    .intro__title {
+      font-size: clamp(30px, 6vw, 44px);
+      font-weight: 600;
+      line-height: 1.12;
+      letter-spacing: -0.02em;
+      margin: 0 0 18px;
+    }
+    .intro__lead {
+      font-size: 16px;
+      color: var(--ink-soft);
+      max-width: 40ch;
+      margin: 0 0 40px;
+    }
+
+    /* Section heading inside real steps */
+    .heading {
+      font-size: 24px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      margin: 0 0 32px;
+    }
+
+    /* Fields — underline style */
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 26px 24px; }
+    .grid .full { grid-column: 1 / -1; }
+    @media (max-width: 460px) { .grid { grid-template-columns: 1fr; } }
+
+    .field { position: relative; }
+    .field > label {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--ink-soft);
+      margin-bottom: 8px;
+    }
+    .field input[type="text"],
+    .field input[type="tel"],
+    .field input[type="email"],
+    .field input[type="number"],
     .field textarea {
       width: 100%;
-      padding: 12px 14px;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      font-size: 15px;
+      border: none;
+      border-bottom: 1.5px solid var(--line-strong);
+      background: transparent;
+      padding: 6px 2px;
       font-family: inherit;
-      background: #fff;
-      transition: border-color 0.15s, box-shadow 0.15s;
+      font-size: 16px;
+      color: var(--ink);
+      transition: border-color 0.2s var(--ease-out);
     }
+    .field input::placeholder,
+    .field textarea::placeholder { color: var(--ink-faint); }
     .field input:focus,
-    .field select:focus,
     .field textarea:focus {
       outline: none;
-      border-color: var(--brand);
-      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
+      border-bottom-color: var(--ink);
     }
-    .field textarea { resize: vertical; min-height: 90px; }
-    .field .error-msg {
-      display: none;
-      color: var(--error);
-      font-size: 12.5px;
-      margin-top: 5px;
-    }
-    .field.has-error input,
-    .field.has-error select,
-    .field.has-error textarea { border-color: var(--error); }
-    .field.has-error .error-msg { display: block; }
+    .field textarea { resize: none; line-height: 1.55; }
 
-    /* Actions */
-    .actions {
-      display: flex;
-      gap: 12px;
-      margin-top: 26px;
+    .field.invalid input,
+    .field.invalid textarea { border-bottom-color: var(--error); }
+    .hint {
+      display: none;
+      font-size: 12px;
+      color: var(--error);
+      margin-top: 6px;
     }
-    .btn {
-      flex: 1;
-      padding: 13px 18px;
-      border: none;
+    .field.invalid .hint { display: block; }
+
+    /* Segmented control */
+    .segmented {
+      display: inline-flex;
+      border: 1.5px solid var(--line-strong);
       border-radius: 10px;
-      font-size: 15px;
-      font-weight: 600;
-      font-family: inherit;
+      overflow: hidden;
+      background: var(--surface);
+    }
+    .segmented label {
+      position: relative;
       cursor: pointer;
-      transition: background 0.15s, opacity 0.15s;
     }
-    .btn--primary { background: var(--brand); color: #fff; }
-    .btn--primary:hover { background: var(--brand-dark); }
-    .btn--ghost {
-      background: transparent;
-      color: var(--muted);
-      border: 1px solid var(--border);
+    .segmented input { position: absolute; opacity: 0; pointer-events: none; }
+    .segmented span {
+      display: block;
+      padding: 10px 20px;
+      font-size: 14.5px;
+      font-weight: 500;
+      color: var(--ink-soft);
+      transition: color 0.2s, background 0.2s;
+      border-inline-start: 1.5px solid var(--line);
     }
-    .btn--ghost:hover { background: var(--bg); }
+    .segmented label:first-child span { border-inline-start: none; }
+    .segmented input:checked + span {
+      background: var(--ink);
+      color: var(--surface);
+    }
+
+    /* Choice list (checkboxes) */
+    .choices { display: flex; flex-direction: column; gap: 2px; }
+    .choice {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      padding: 12px 4px;
+      cursor: pointer;
+      border-bottom: 1px solid var(--line);
+    }
+    .choice:last-of-type { border-bottom: none; }
+    .choice input { position: absolute; opacity: 0; pointer-events: none; }
+    .choice .box {
+      flex: 0 0 auto;
+      width: 20px;
+      height: 20px;
+      border: 1.5px solid var(--line-strong);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s var(--ease-out), border-color 0.15s var(--ease-out);
+    }
+    .choice .box svg { width: 12px; height: 12px; stroke: var(--surface); stroke-width: 2.5; fill: none; opacity: 0; transform: scale(0.6); transition: opacity 0.15s, transform 0.15s var(--ease-out); }
+    .choice input:checked + .box { background: var(--ink); border-color: var(--ink); }
+    .choice input:checked + .box svg { opacity: 1; transform: scale(1); }
+    .choice .box + span { font-size: 15.5px; color: var(--ink); }
+
+    .other-detail {
+      max-height: 0;
+      overflow: hidden;
+      opacity: 0;
+      transition: max-height 0.35s var(--ease-out), opacity 0.25s var(--ease-out), margin 0.35s var(--ease-out);
+    }
+    .other-detail.open { max-height: 80px; opacity: 1; margin-top: 10px; }
+
+    .label-block {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--ink-soft);
+      margin-bottom: 12px;
+    }
+
+    /* Footer / actions */
+    .foot {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 48px;
+    }
+    .back {
+      background: none;
+      border: none;
+      font-family: inherit;
+      font-size: 15px;
+      color: var(--ink-faint);
+      cursor: pointer;
+      padding: 8px 0;
+      transition: color 0.2s;
+    }
+    .back:hover { color: var(--ink); }
+    .back[hidden] { visibility: hidden; }
+
+    .btn {
+      appearance: none;
+      border: none;
+      font-family: inherit;
+      font-size: 15.5px;
+      font-weight: 500;
+      color: var(--surface);
+      background: var(--ink);
+      padding: 14px 34px;
+      border-radius: 11px;
+      cursor: pointer;
+      transition: transform 0.16s var(--ease-out), background 0.2s;
+    }
+    .btn:hover { background: #000; }
+    .btn:active { transform: scale(0.97); }
+    .btn--wide { width: 100%; padding: 16px; font-size: 16px; }
 
     /* Success */
-    .success { text-align: center; padding: 12px 0; }
-    .success__icon {
-      width: 64px; height: 64px;
-      margin: 0 auto 16px;
-      border-radius: 50%;
-      background: #ecfdf5;
-      color: #059669;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 32px;
+    .done { display: none; padding: 20px 0; }
+    .done.is-active { display: block; animation: rise 0.5s var(--ease-out); }
+    .done__title {
+      font-size: clamp(26px, 5vw, 36px);
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      margin: 0 0 14px;
     }
-    .success h2 { margin: 0 0 8px; font-size: 20px; }
-    .success p { margin: 0; color: var(--muted); font-size: 14px; }
+    .done__text { font-size: 16px; color: var(--ink-soft); max-width: 38ch; margin: 0; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .step.is-active, .done.is-active { animation: none; }
+      .track__fill { transition: none; }
+    }
   </style>
 </head>
 <body>
-  <div class="card">
-    <div class="card__header">
-      <h1 class="card__title">השארת פרטים</h1>
-      <p class="card__subtitle">מלאו את הפרטים ונחזור אליכם בהקדם</p>
+  <div class="shell">
+
+    <div class="meta" id="meta" hidden>
+      <span class="meta__section" id="metaSection"></span>
+      <span class="meta__count" id="metaCount"></span>
     </div>
+    <div class="track" id="track" hidden><div class="track__fill" id="trackFill"></div></div>
 
-    <div class="progress">
-      <div class="progress__bar"><div class="progress__fill" id="progressFill"></div></div>
-      <div class="progress__label" id="progressLabel">שלב 1 מתוך 3</div>
-    </div>
+    <form id="form" novalidate>
 
-    <form id="leadForm" novalidate>
-      <!-- Step 1 -->
-      <div class="step is-active" data-step="1">
-        <div class="field">
-          <label for="fullName">שם מלא</label>
-          <input type="text" id="fullName" name="fullName" placeholder="ישראל ישראלי" required>
-          <span class="error-msg">נא להזין שם מלא</span>
+      <!-- STEP ZERO — פתיח -->
+      <section class="step is-active" data-section="פתיח">
+        <div class="intro">
+          <p class="intro__eyebrow">לעסקים קטנים ובינוניים</p>
+          <h1 class="intro__title">שאלון התאמה<br>לצמיחה עסקית</h1>
+          <p class="intro__lead">כמה שאלות קצרות שיעזרו לנו להבין את העסק שלך ואיפה אפשר לצמוח.</p>
+          <button type="button" class="btn" data-next>התחל שאלון</button>
         </div>
-        <div class="field">
-          <label for="phone">טלפון</label>
-          <input type="tel" id="phone" name="phone" placeholder="050-0000000" required>
-          <span class="error-msg">נא להזין מספר טלפון תקין</span>
-        </div>
-      </div>
+      </section>
 
-      <!-- Step 2 -->
-      <div class="step" data-step="2">
-        <div class="field">
-          <label for="email">אימייל</label>
-          <input type="email" id="email" name="email" placeholder="name@example.com" required>
-          <span class="error-msg">נא להזין כתובת אימייל תקינה</span>
+      <!-- STEP ONE — היכרות -->
+      <section class="step" data-section="היכרות" data-count>
+        <h2 class="heading">היכרות</h2>
+        <div class="grid">
+          <div class="field">
+            <label for="ownerName">שם בעל העסק</label>
+            <input type="text" id="ownerName" name="ownerName" required>
+            <span class="hint">נא למלא שם</span>
+          </div>
+          <div class="field">
+            <label for="phone">טלפון</label>
+            <input type="tel" id="phone" name="phone" inputmode="tel" required>
+            <span class="hint">נא למלא טלפון תקין</span>
+          </div>
+          <div class="field full">
+            <label for="email">מייל</label>
+            <input type="email" id="email" name="email" inputmode="email" required>
+            <span class="hint">נא למלא כתובת מייל תקינה</span>
+          </div>
+          <div class="field">
+            <label for="bizName">שם העסק</label>
+            <input type="text" id="bizName" name="bizName">
+          </div>
+          <div class="field">
+            <label for="bizField">תחום העסק</label>
+            <input type="text" id="bizField" name="bizField">
+          </div>
+          <div class="field full">
+            <label for="bizAbout">ספר על העסק בכמה מילים</label>
+            <textarea id="bizAbout" name="bizAbout" rows="2"></textarea>
+          </div>
+          <div class="field full">
+            <label for="product">מה המוצר או השירות שנמכר</label>
+            <input type="text" id="product" name="product">
+          </div>
+          <div class="field full">
+            <div class="label-block">האם אתה מוכר באונליין, אופליין או גם וגם</div>
+            <div class="segmented">
+              <label><input type="radio" name="channel" value="אונליין"><span>אונליין</span></label>
+              <label><input type="radio" name="channel" value="אופליין"><span>אופליין</span></label>
+              <label><input type="radio" name="channel" value="גם וגם"><span>גם וגם</span></label>
+            </div>
+          </div>
+          <div class="field">
+            <label for="revenue">מחזור חודשי משוער</label>
+            <input type="text" id="revenue" name="revenue" inputmode="numeric">
+          </div>
+          <div class="field">
+            <label for="margin">אחוזי רווח משוערים</label>
+            <input type="text" id="margin" name="margin" inputmode="numeric">
+          </div>
         </div>
-        <div class="field">
-          <label for="topic">נושא הפנייה</label>
-          <select id="topic" name="topic" required>
-            <option value="">בחרו נושא…</option>
-            <option value="sales">מכירות</option>
-            <option value="support">תמיכה</option>
-            <option value="other">אחר</option>
-          </select>
-          <span class="error-msg">נא לבחור נושא</span>
-        </div>
-      </div>
+      </section>
 
-      <!-- Step 3 -->
-      <div class="step" data-step="3">
-        <div class="field">
-          <label for="message">הודעה (אופציונלי)</label>
-          <textarea id="message" name="message" placeholder="כתבו לנו כמה מילים…"></textarea>
+      <!-- STEP TWO — שיווק -->
+      <section class="step" data-section="שיווק" data-count>
+        <h2 class="heading">שיווק</h2>
+        <div class="grid">
+          <div class="field full">
+            <label for="audience">לאיזה קהל אתה מוכר הכי הרבה</label>
+            <input type="text" id="audience" name="audience">
+          </div>
+          <div class="field full">
+            <label for="bestseller">מה הדבר הכי נמכר</label>
+            <input type="text" id="bestseller" name="bestseller">
+          </div>
+          <div class="field full">
+            <div class="label-block">איפה אתה מפרסם את העסק</div>
+            <div class="choices">
+              <label class="choice">
+                <input type="checkbox" name="ads" value="קבוצות פייסבוק / ווטסאפ">
+                <span class="box"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>
+                <span>קבוצות פייסבוק / ווטסאפ</span>
+              </label>
+              <label class="choice">
+                <input type="checkbox" name="ads" value="רשתות חברתיות">
+                <span class="box"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>
+                <span>רשתות חברתיות</span>
+              </label>
+              <label class="choice">
+                <input type="checkbox" name="ads" value="ממומן ברשתות">
+                <span class="box"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>
+                <span>ממומן ברשתות החברתיות</span>
+              </label>
+              <label class="choice">
+                <input type="checkbox" name="ads" value="פה לאוזן">
+                <span class="box"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>
+                <span>פה לאוזן</span>
+              </label>
+              <label class="choice">
+                <input type="checkbox" name="ads" value="פרסום אופליין">
+                <span class="box"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>
+                <span>פרסום אופליין</span>
+              </label>
+              <label class="choice">
+                <input type="checkbox" name="ads" value="אחר" id="adsOther">
+                <span class="box"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>
+                <span>אחר</span>
+              </label>
+            </div>
+            <div class="other-detail" id="adsOtherDetail">
+              <input type="text" name="adsOtherText" placeholder="פירוט">
+            </div>
+          </div>
         </div>
-      </div>
+      </section>
 
-      <div class="actions">
-        <button type="button" class="btn btn--ghost" id="prevBtn" style="display:none;">חזרה</button>
-        <button type="button" class="btn btn--primary" id="nextBtn">המשך</button>
-        <button type="submit" class="btn btn--primary" id="submitBtn" style="display:none;">שליחה</button>
+      <!-- STEP THREE — מיצוב ומטרות -->
+      <section class="step" data-section="מיצוב ומטרות" data-count data-last>
+        <h2 class="heading">מיצוב ומטרות</h2>
+        <div class="grid">
+          <div class="field full">
+            <label for="goal">לאן היית רוצה לקחת את העסק שלך</label>
+            <textarea id="goal" name="goal" rows="2"></textarea>
+          </div>
+          <div class="field full">
+            <label for="working">מה כן עובד טוב בעסק</label>
+            <textarea id="working" name="working" rows="2"></textarea>
+          </div>
+          <div class="field full">
+            <label for="notWorking">מה לא עובד טוב בעסק</label>
+            <textarea id="notWorking" name="notWorking" rows="2"></textarea>
+          </div>
+        </div>
+      </section>
+
+      <div class="foot" id="foot" hidden>
+        <button type="button" class="back" id="back">חזרה</button>
+        <button type="button" class="btn" id="next">המשך</button>
+        <button type="submit" class="btn" id="submit" hidden>שליחה</button>
       </div>
     </form>
 
     <!-- Success -->
-    <div class="success" id="successScreen" style="display:none;">
-      <div class="success__icon">✓</div>
-      <h2>הפרטים נשלחו!</h2>
-      <p>תודה, קיבלנו את הפנייה ונחזור אליכם בהקדם.</p>
+    <div class="done" id="done">
+      <h2 class="done__title">תודה רבה</h2>
+      <p class="done__text">קיבלנו את הפרטים. נעבור עליהם ונחזור אליך בהקדם.</p>
     </div>
+
   </div>
 
   <script>
-    const form = document.getElementById('leadForm');
+    const form = document.getElementById('form');
     const steps = Array.from(form.querySelectorAll('.step'));
-    const totalSteps = steps.length;
-    let current = 0;
+    const realSteps = steps.filter(s => s.hasAttribute('data-count'));
+    const total = realSteps.length;
 
-    const prevBtn = document.getElementById('prevBtn');
-    const nextBtn = document.getElementById('nextBtn');
-    const submitBtn = document.getElementById('submitBtn');
-    const progressFill = document.getElementById('progressFill');
-    const progressLabel = document.getElementById('progressLabel');
+    const meta = document.getElementById('meta');
+    const metaSection = document.getElementById('metaSection');
+    const metaCount = document.getElementById('metaCount');
+    const track = document.getElementById('track');
+    const trackFill = document.getElementById('trackFill');
+    const foot = document.getElementById('foot');
+    const backBtn = document.getElementById('back');
+    const nextBtn = document.getElementById('next');
+    const submitBtn = document.getElementById('submit');
 
-    function updateUI() {
-      steps.forEach((s, i) => s.classList.toggle('is-active', i === current));
+    let i = 0;
 
-      const pct = ((current + 1) / totalSteps) * 100;
-      progressFill.style.width = pct + '%';
-      progressLabel.textContent = `שלב ${current + 1} מתוך ${totalSteps}`;
+    function render() {
+      steps.forEach((s, idx) => s.classList.toggle('is-active', idx === i));
+      const step = steps[i];
+      const isIntro = !step.hasAttribute('data-count');
+      const isLast = step.hasAttribute('data-last');
 
-      prevBtn.style.display = current === 0 ? 'none' : 'block';
-      nextBtn.style.display = current === totalSteps - 1 ? 'none' : 'block';
-      submitBtn.style.display = current === totalSteps - 1 ? 'block' : 'none';
+      meta.hidden = isIntro;
+      track.hidden = isIntro;
+      foot.hidden = isIntro;
+
+      if (!isIntro) {
+        const n = realSteps.indexOf(step) + 1;
+        metaSection.textContent = step.dataset.section;
+        metaCount.textContent = String(n).padStart(2, '0') + ' / ' + String(total).padStart(2, '0');
+        trackFill.style.width = (n / total) * 100 + '%';
+        backBtn.hidden = false;
+        nextBtn.hidden = isLast;
+        submitBtn.hidden = !isLast;
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    function validateStep(index) {
-      const fields = steps[index].querySelectorAll('input, select, textarea');
-      let valid = true;
-      fields.forEach(field => {
-        const wrapper = field.closest('.field');
-        let ok = field.checkValidity() && field.value.trim() !== '' || !field.required;
-        if (field.required && field.value.trim() === '') ok = false;
-        if (field.type === 'email' && field.value && !field.checkValidity()) ok = false;
-        wrapper.classList.toggle('has-error', !ok);
-        if (!ok) valid = false;
+    function validate(step) {
+      let ok = true;
+      step.querySelectorAll('[required]').forEach(el => {
+        const field = el.closest('.field');
+        const valid = el.checkValidity() && el.value.trim() !== '';
+        field.classList.toggle('invalid', !valid);
+        if (!valid) ok = false;
       });
-      return valid;
+      return ok;
     }
 
-    nextBtn.addEventListener('click', () => {
-      if (!validateStep(current)) return;
-      if (current < totalSteps - 1) { current++; updateUI(); }
+    form.querySelectorAll('[data-next]').forEach(b => b.addEventListener('click', go));
+    nextBtn.addEventListener('click', go);
+
+    function go() {
+      const step = steps[i];
+      if (step.hasAttribute('data-count') && !validate(step)) return;
+      if (i < steps.length - 1) { i++; render(); }
+    }
+
+    backBtn.addEventListener('click', () => { if (i > 0) { i--; render(); } });
+
+    // Clear invalid state as the user types
+    form.addEventListener('input', e => {
+      const field = e.target.closest('.field.invalid');
+      if (field) field.classList.remove('invalid');
     });
 
-    prevBtn.addEventListener('click', () => {
-      if (current > 0) { current--; updateUI(); }
-    });
+    // "אחר" reveal
+    const adsOther = document.getElementById('adsOther');
+    const adsOtherDetail = document.getElementById('adsOtherDetail');
+    adsOther.addEventListener('change', () => adsOtherDetail.classList.toggle('open', adsOther.checked));
 
-    form.addEventListener('submit', (e) => {
+    form.addEventListener('submit', e => {
       e.preventDefault();
-      if (!validateStep(current)) return;
+      if (!validate(steps[i])) return;
 
-      const data = Object.fromEntries(new FormData(form).entries());
-      console.log('נתוני הטופס:', data);
+      const data = {};
+      new FormData(form).forEach((v, k) => {
+        if (data[k] !== undefined) data[k] = [].concat(data[k], v);
+        else data[k] = v;
+      });
+      console.log('נתוני השאלון:', data);
 
       form.style.display = 'none';
-      document.querySelector('.progress').style.display = 'none';
-      document.getElementById('successScreen').style.display = 'block';
+      meta.hidden = true;
+      track.hidden = true;
+      document.getElementById('done').classList.add('is-active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     });
 
-    updateUI();
+    render();
   </script>
 </body>
 </html>
