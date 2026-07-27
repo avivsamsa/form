@@ -29,7 +29,7 @@ var COLUMNS = [
   ['audience',     'קהל עיקרי'],
   ['bestseller',   'הכי נמכר'],
   ['ads',          'איפה מפרסם'],
-  ['adsOtherText', 'פרסום — אחר'],
+  ['adsOtherText', 'פרסום אחר'],
   ['goal',         'מטרות'],
   ['working',      'מה עובד טוב'],
   ['notWorking',   'מה לא עובד טוב']

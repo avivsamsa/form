@@ -101,7 +101,7 @@
 
     /* Staggered entrance for each element in a step */
     .step.is-active .stack > *,
-    .step.is-active .intro > * {
+    .step.is-active .hero > * {
       opacity: 0;
       animation: enter 0.55s var(--ease-out) forwards;
     }
@@ -109,16 +109,16 @@
       from { opacity: 0; transform: translateY(16px); filter: blur(6px); }
       to { opacity: 1; transform: none; filter: blur(0); }
     }
-    .step.is-active .stack > *:nth-child(1), .step.is-active .intro > *:nth-child(1) { animation-delay: 0.02s; }
-    .step.is-active .stack > *:nth-child(2), .step.is-active .intro > *:nth-child(2) { animation-delay: 0.07s; }
-    .step.is-active .stack > *:nth-child(3), .step.is-active .intro > *:nth-child(3) { animation-delay: 0.12s; }
-    .step.is-active .stack > *:nth-child(4), .step.is-active .intro > *:nth-child(4) { animation-delay: 0.17s; }
-    .step.is-active .stack > *:nth-child(5), .step.is-active .intro > *:nth-child(5) { animation-delay: 0.22s; }
-    .step.is-active .stack > *:nth-child(6), .step.is-active .intro > *:nth-child(6) { animation-delay: 0.27s; }
-    .step.is-active .stack > *:nth-child(7), .step.is-active .intro > *:nth-child(7) { animation-delay: 0.32s; }
-    .step.is-active .stack > *:nth-child(8), .step.is-active .intro > *:nth-child(8) { animation-delay: 0.37s; }
-    .step.is-active .stack > *:nth-child(9) { animation-delay: 0.42s; }
-    .step.is-active .stack > *:nth-child(n+10) { animation-delay: 0.47s; }
+    .step.is-active .stack > *:nth-child(1), .step.is-active .hero > *:nth-child(1) { animation-delay: 0.02s; }
+    .step.is-active .stack > *:nth-child(2), .step.is-active .hero > *:nth-child(2) { animation-delay: 0.09s; }
+    .step.is-active .stack > *:nth-child(3), .step.is-active .hero > *:nth-child(3) { animation-delay: 0.16s; }
+    .step.is-active .stack > *:nth-child(4), .step.is-active .hero > *:nth-child(4) { animation-delay: 0.23s; }
+    .step.is-active .stack > *:nth-child(5), .step.is-active .hero > *:nth-child(5) { animation-delay: 0.30s; }
+    .step.is-active .stack > *:nth-child(6), .step.is-active .hero > *:nth-child(6) { animation-delay: 0.37s; }
+    .step.is-active .stack > *:nth-child(7) { animation-delay: 0.42s; }
+    .step.is-active .stack > *:nth-child(8) { animation-delay: 0.47s; }
+    .step.is-active .stack > *:nth-child(9) { animation-delay: 0.52s; }
+    .step.is-active .stack > *:nth-child(n+10) { animation-delay: 0.57s; }
 
     @keyframes rise {
       from { opacity: 0; transform: translateY(10px); }
@@ -126,70 +126,90 @@
     }
 
     /* Intro (step zero) — full screen cover */
-    .intro {
-      min-height: calc(100dvh - 52px);
+    /* ---------- Landing ---------- */
+    .landing { padding-bottom: 20px; }
+    .intro__note {
+      font-size: 12.5px;
+      color: var(--ink-faint);
+      max-width: 40ch;
+      margin: 20px auto 0;
+    }
+    .intro__cta { align-self: center; width: 100%; max-width: 340px; }
+
+    /* Hero — first screen */
+    .hero {
+      min-height: calc(100dvh - 76px);
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
       text-align: center;
-      padding: 20px 4px;
+      padding: 24px 0 40px;
     }
-    .intro__eyebrow {
-      font-size: 14px;
-      font-weight: 500;
-      color: var(--ink-faint);
-      margin: 0 0 18px;
-    }
-    .intro__title {
-      font-size: clamp(32px, 9vw, 46px);
-      font-weight: 600;
-      line-height: 1.12;
-      letter-spacing: -0.02em;
-      margin: 0 0 18px;
-    }
-    .intro__lead {
-      font-size: 16px;
-      color: var(--ink-soft);
-      max-width: 42ch;
-      margin: 0 auto 20px;
-    }
-    .intro__note {
-      font-size: 13px;
-      color: var(--ink-faint);
-      max-width: 38ch;
-      margin: 18px auto 0;
-    }
-    .intro__cta { align-self: center; margin-top: 6px; }
-    @media (max-width: 460px) { .intro__cta { align-self: stretch; text-align: center; } }
-
-    /* Landing hero */
     .kicker {
       display: inline-block;
-      font-size: 13px; font-weight: 600; letter-spacing: 0.04em;
+      font-size: 12.5px; font-weight: 600; letter-spacing: 0.04em;
       color: var(--accent);
       background: var(--accent-soft);
-      padding: 7px 15px; border-radius: 999px;
-      margin-bottom: 22px;
+      padding: 7px 16px; border-radius: 999px;
+      margin-bottom: 24px;
     }
     .hero-title {
-      font-size: clamp(30px, 8.5vw, 44px);
-      font-weight: 700; line-height: 1.1; letter-spacing: -0.02em;
-      margin: 0 0 16px;
+      font-size: clamp(31px, 9vw, 46px);
+      font-weight: 700; line-height: 1.12; letter-spacing: -0.025em;
+      margin: 0 0 18px;
     }
     .hero-sub {
-      font-size: 17px; color: var(--ink-soft);
-      max-width: 40ch; margin: 0 auto 26px;
+      font-size: 16.5px; line-height: 1.6; color: var(--ink-soft);
+      max-width: 34ch; margin: 0 auto 26px;
     }
     .hero-punch {
-      font-size: 20px; font-weight: 600; color: var(--ink);
-      margin: 0 0 28px;
+      font-size: 19px; font-weight: 600; color: var(--ink);
+      margin: 0 0 30px;
     }
     .hero-punch span { color: var(--accent); }
-    .hero-body {
-      font-size: 15.5px; line-height: 1.75; color: var(--ink-soft);
-      max-width: 46ch; margin: 0 auto 18px;
+    .hero-meta {
+      font-size: 13px; color: var(--ink-faint);
+      margin: 16px 0 0; letter-spacing: 0.01em;
     }
+
+    /* Section */
+    .section { padding: 8px 0 12px; }
+    .section__title {
+      font-size: 14px; font-weight: 600; letter-spacing: 0.02em;
+      color: var(--ink-faint);
+      text-align: center; margin: 0 0 22px;
+    }
+    .steps { display: flex; flex-direction: column; gap: 12px; }
+    .stepcard {
+      display: flex; align-items: flex-start; gap: 15px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 18px;
+    }
+    .stepcard__icon {
+      flex: 0 0 auto;
+      width: 46px; height: 46px;
+      border-radius: 12px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .stepcard__icon svg { width: 23px; height: 23px; }
+    .stepcard__text h3 { font-size: 17px; font-weight: 600; margin: 3px 0 5px; letter-spacing: -0.01em; }
+    .stepcard__text p { font-size: 14.5px; line-height: 1.55; color: var(--ink-soft); margin: 0; }
+
+    /* Closer */
+    .closer { text-align: center; padding: 34px 0 8px; }
+    .closer__line {
+      font-size: 15.5px; line-height: 1.65; color: var(--ink-soft);
+      max-width: 40ch; margin: 0 auto 24px;
+    }
+
+    /* Scroll reveal */
+    .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.6s var(--ease-out), transform 0.6s var(--ease-out); }
+    .reveal.in { opacity: 1; transform: none; }
 
     .consent {
       font-size: 12.5px;
@@ -355,10 +375,10 @@
 
     @media (prefers-reduced-motion: reduce) {
       .step.is-active .stack > *,
-      .step.is-active .intro > *,
+      .step.is-active .hero > *,
       .header.anim .header__step,
-      .header.anim .header__count,
       .done.is-active { animation: none; opacity: 1; }
+      .reveal { opacity: 1; transform: none; transition: none; }
       .track__fill { transition: none; }
     }
   </style>
@@ -380,15 +400,59 @@
 
         <!-- STEP ZERO — פתיח -->
         <section class="step is-active" data-section="פתיח">
-          <div class="intro">
-            <span class="kicker">הזדמנות לפניך</span>
-            <h1 class="hero-title">מרגיש שהעסק שלך תקוע?</h1>
-            <p class="hero-sub">בין אם זה שיווק, תפעול, פיננסים, מכירות או כל דבר אחר — ההצעה הבאה היא בשבילך.</p>
-            <p class="hero-punch">אני לא באתי למכור לך כלום. <span>עדיין.</span></p>
-            <p class="hero-body">כחלק מפיילוט לשיטה חדשה שפיתחתי, אני מחפש עסקים קטנים-בינוניים שמרגישים שהם בתקרת הזכוכית. ביחד נפתח את מכסה המנוע, נבין את המצב הקיים, ומשם נבנה תוכנית לפיצוח המחסום.</p>
-            <p class="hero-body">השיטה לא מתאימה לכל עסק — ולכן לפניך שאלון התאמה. במידה ותימָצא מתאים, אצור איתך קשר.</p>
-            <button type="button" class="btn intro__cta" data-next>למילוי שאלון ההתאמה</button>
-            <p class="intro__note">הטופס מנוסח בלשון זכר מטעמי נוחות בלבד, ופונה לשני המינים כאחד.</p>
+          <div class="landing">
+
+            <!-- Hero -->
+            <div class="hero">
+              <span class="kicker">הזדמנות לפניך</span>
+              <h1 class="hero-title">מרגיש שהעסק שלך<br>תקוע בתקרת זכוכית?</h1>
+              <p class="hero-sub">שיווק, תפעול, פיננסים או מכירות. אם משהו בעסק פשוט לא זז, ההצעה הבאה בשבילך.</p>
+              <p class="hero-punch">אני לא באתי למכור לך כלום. <span>עדיין.</span></p>
+              <button type="button" class="btn intro__cta" data-next>למילוי שאלון ההתאמה</button>
+              <p class="hero-meta">כ־2 דקות · פרטי לחלוטין · ללא התחייבות</p>
+            </div>
+
+            <!-- How it works -->
+            <div class="section reveal">
+              <h2 class="section__title">איך זה עובד</h2>
+              <div class="steps">
+                <div class="stepcard">
+                  <span class="stepcard__icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+                  </span>
+                  <div class="stepcard__text">
+                    <h3>פותחים את מכסה המנוע</h3>
+                    <p>אבחון מלא של העסק לעומק, בלי לייפות את המציאות.</p>
+                  </div>
+                </div>
+                <div class="stepcard">
+                  <span class="stepcard__icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1"/></svg>
+                  </span>
+                  <div class="stepcard__text">
+                    <h3>מזהים את המחסום</h3>
+                    <p>איפה בדיוק תקרת הזכוכית שעוצרת את העסק מלגדול.</p>
+                  </div>
+                </div>
+                <div class="stepcard">
+                  <span class="stepcard__icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 7-7"/><path d="M17 8h4v4"/></svg>
+                  </span>
+                  <div class="stepcard__text">
+                    <h3>בונים תוכנית לפיצוח</h3>
+                    <p>מהלך ממוקד לשבירת התקרה, עם יעד מדיד מראש.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Selectivity + CTA -->
+            <div class="closer reveal">
+              <p class="closer__line">השיטה לא מתאימה לכל עסק. יש שאלון התאמה קצר, ואם תימצא מתאים אצור איתך קשר.</p>
+              <button type="button" class="btn intro__cta" data-next>למילוי שאלון ההתאמה</button>
+              <p class="intro__note">הטופס מנוסח בלשון זכר מטעמי נוחות, ופונה לשני המינים כאחד.</p>
+            </div>
+
           </div>
         </section>
 
@@ -704,6 +768,12 @@
         alert('הייתה תקלה בשליחה. נסה שוב בבקשה.');
       }
     });
+
+    // Reveal landing sections on scroll
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, { threshold: 0.15 });
+    document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 
     function showDone() {
       document.querySelector('.content').style.display = 'none';
