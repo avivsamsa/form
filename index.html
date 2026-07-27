@@ -115,7 +115,7 @@
     .step.is-active .stack > *:nth-child(4), .step.is-active .hero > *:nth-child(4) { animation-delay: 0.23s; }
     .step.is-active .stack > *:nth-child(5), .step.is-active .hero > *:nth-child(5) { animation-delay: 0.30s; }
     .step.is-active .stack > *:nth-child(6), .step.is-active .hero > *:nth-child(6) { animation-delay: 0.37s; }
-    .step.is-active .stack > *:nth-child(7) { animation-delay: 0.42s; }
+    .step.is-active .stack > *:nth-child(7), .step.is-active .hero > *:nth-child(7) { animation-delay: 0.42s; }
     .step.is-active .stack > *:nth-child(8) { animation-delay: 0.47s; }
     .step.is-active .stack > *:nth-child(9) { animation-delay: 0.52s; }
     .step.is-active .stack > *:nth-child(n+10) { animation-delay: 0.57s; }
@@ -173,12 +173,31 @@
       margin: 16px 0 0; letter-spacing: 0.01em;
     }
 
+    /* Pain chips */
+    .pains {
+      display: flex; flex-wrap: wrap; justify-content: center;
+      gap: 10px; margin: 0 0 30px;
+    }
+    .pain {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 9px 15px;
+      border: 1px solid var(--line-strong);
+      border-radius: 999px;
+      background: var(--surface);
+      font-size: 14.5px; font-weight: 500; color: var(--ink);
+    }
+    .pain svg { width: 17px; height: 17px; color: var(--accent); }
+
     /* Section */
     .section { padding: 8px 0 12px; }
     .section__title {
-      font-size: 14px; font-weight: 600; letter-spacing: 0.02em;
-      color: var(--ink-faint);
-      text-align: center; margin: 0 0 22px;
+      font-size: 13px; font-weight: 600; letter-spacing: 0.06em;
+      color: var(--accent);
+      text-align: center; margin: 0 0 16px;
+    }
+    .section__lead {
+      font-size: 16px; line-height: 1.75; color: var(--ink-soft);
+      max-width: 46ch; margin: 0 auto 28px; text-align: center;
     }
     .steps { display: flex; flex-direction: column; gap: 12px; }
     .stepcard {
@@ -402,19 +421,28 @@
         <section class="step is-active" data-section="פתיח">
           <div class="landing">
 
-            <!-- Hero -->
+            <!-- SECTION 1 — Hero -->
             <div class="hero">
               <span class="kicker">הזדמנות לפניך</span>
               <h1 class="hero-title">מרגיש שהעסק שלך<br>תקוע בתקרת זכוכית?</h1>
-              <p class="hero-sub">שיווק, תפעול, פיננסים או מכירות. אם משהו בעסק פשוט לא זז, ההצעה הבאה בשבילך.</p>
+              <p class="hero-sub">אם אתה מרגיש שהעסק שלך תקוע, בין אם בשיווק, תפעול, פיננסים, מכירות או כל דבר אחר. ההצעה הבאה היא בשבילך.</p>
+
+              <div class="pains">
+                <span class="pain"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l14-7v16L3 13z"/><path d="M7 12v4a2 2 0 0 0 4 0"/></svg>שיווק</span>
+                <span class="pain"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></svg>תפעול</span>
+                <span class="pain"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/></svg>פיננסים</span>
+                <span class="pain"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7l9 5 9-5M3 7l9-4 9 4M3 7v10l9 4 9-4V7"/></svg>מכירות</span>
+              </div>
+
               <p class="hero-punch">אני לא באתי למכור לך כלום. <span>עדיין.</span></p>
               <button type="button" class="btn intro__cta" data-next>למילוי שאלון ההתאמה</button>
               <p class="hero-meta">כ־2 דקות · פרטי לחלוטין · ללא התחייבות</p>
             </div>
 
-            <!-- How it works -->
+            <!-- SECTION 2 — The pilot -->
             <div class="section reveal">
-              <h2 class="section__title">איך זה עובד</h2>
+              <h2 class="section__title">על הפיילוט</h2>
+              <p class="section__lead">כחלק מפיילוט לשיטה חדשה שפיתחתי, אני מחפש עסקים קטנים-בינוניים שמרגישים שהם בתקרת הזכוכית. ביחד נפתח את מכסה המנוע, נבין את המצב הקיים, ומשם נבנה תוכנית לפיצוח המחסום.</p>
               <div class="steps">
                 <div class="stepcard">
                   <span class="stepcard__icon">
@@ -422,7 +450,7 @@
                   </span>
                   <div class="stepcard__text">
                     <h3>פותחים את מכסה המנוע</h3>
-                    <p>אבחון מלא של העסק לעומק, בלי לייפות את המציאות.</p>
+                    <p>מסתכלים על העסק לעומק, בלי לייפות את המציאות.</p>
                   </div>
                 </div>
                 <div class="stepcard">
@@ -430,8 +458,8 @@
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1"/></svg>
                   </span>
                   <div class="stepcard__text">
-                    <h3>מזהים את המחסום</h3>
-                    <p>איפה בדיוק תקרת הזכוכית שעוצרת את העסק מלגדול.</p>
+                    <h3>מבינים את המצב הקיים</h3>
+                    <p>איפה בדיוק העסק תקוע ומה עוצר אותו מלגדול.</p>
                   </div>
                 </div>
                 <div class="stepcard">
@@ -440,15 +468,15 @@
                   </span>
                   <div class="stepcard__text">
                     <h3>בונים תוכנית לפיצוח</h3>
-                    <p>מהלך ממוקד לשבירת התקרה, עם יעד מדיד מראש.</p>
+                    <p>מהלך ממוקד לשבירת תקרת הזכוכית.</p>
                   </div>
                 </div>
               </div>
             </div>
 
-            <!-- Selectivity + CTA -->
+            <!-- Closer + CTA -->
             <div class="closer reveal">
-              <p class="closer__line">השיטה לא מתאימה לכל עסק. יש שאלון התאמה קצר, ואם תימצא מתאים אצור איתך קשר.</p>
+              <p class="closer__line">השיטה לא מתאימה לכל עסק, ולכן לפניך שאלון התאמה. במידה ותימצא מתאים, אצור איתך קשר.</p>
               <button type="button" class="btn intro__cta" data-next>למילוי שאלון ההתאמה</button>
               <p class="intro__note">הטופס מנוסח בלשון זכר מטעמי נוחות, ופונה לשני המינים כאחד.</p>
             </div>
